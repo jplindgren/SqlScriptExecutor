@@ -43,7 +43,6 @@ namespace SqlScriptExecuter {
                 }
                 
             }
-
             
             //sql server
             //FileInfo file = new FileInfo("C:\\myscript.sql");
