@@ -28,9 +28,20 @@ namespace SqlScriptExecuter {
                     }        
                 }
 
-                MySqlScript script = new MySqlScript(new MySqlConnection(ConnectionString), result);
-                script.Delimiter = "$$";
-                script.Execute();    
+                MySqlConnection connMySql = null;
+                try {
+                    connMySql = new MySqlConnection(ConnectionString);
+                    MySqlScript script = new MySqlScript(connMySql, result);
+                    script.Delimiter = "$$";
+                    script.Execute();
+                } catch (MySqlException ex) {
+                    throw new Exception("Problems with the database sorry..." ,ex);                    
+                } catch(Exception ex){
+                    throw;
+                }finally {
+                    connMySql.Close();
+                }
+                
             }
 
             
