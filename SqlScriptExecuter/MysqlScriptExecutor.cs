@@ -19,29 +19,29 @@ namespace SqlScriptExecuter {
                 throw new ArgumentNullException("You must add a script to execute.");
 
             Assembly thisAssembly = Assembly.GetCallingAssembly();
-            
-            foreach (string file in ScriptsFiles) {
-                string result = string.Empty;
-                using (Stream stream = thisAssembly.GetManifestResourceStream(file)) {
-                    using (StreamReader reader = new StreamReader(stream)) {
-                        result = reader.ReadToEnd();
-                    }        
-                }
 
-                MySqlConnection connMySql = null;
-                try {
-                    connMySql = new MySqlConnection(ConnectionString);
+            MySqlConnection connMySql = null;
+            try {
+                connMySql = new MySqlConnection(ConnectionString);
+                foreach (string file in ScriptsFiles) {
+                    string result = string.Empty;
+                    using (Stream stream = thisAssembly.GetManifestResourceStream(file)) {
+                        using (StreamReader reader = new StreamReader(stream)) {
+                            result = reader.ReadToEnd();
+                        }
+                    }                
+                    
                     MySqlScript script = new MySqlScript(connMySql, result);
                     script.Delimiter = "$$";
-                    script.Execute();
-                } catch (MySqlException ex) {
-                    throw new Exception("Problems with the database sorry..." ,ex);                    
-                } catch(Exception ex){
-                    throw;
-                }finally {
-                    connMySql.Close();
+                    script.Execute();                
                 }
-                
+
+            } catch (MySqlException ex) {
+                throw new Exception("Problems with the database sorry...", ex);
+            } catch (Exception ex) {
+                throw;
+            } finally {
+                connMySql.Close();
             }
             
             //sql server
